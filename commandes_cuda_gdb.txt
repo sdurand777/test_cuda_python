@@ -1,0 +1,22 @@
+# pour lancer cuda-gdb
+cuda-gdb python 
+
+# pour mettre un breakpoint
+break addition_kernel
+break src/cuda_add.cu:10
+
+# savoir ou on est
+list
+where
+
+# tracer
+backtrace
+
+# info
+info threads
+info breakpoints
+
+# exit
+exit
+
+// idem pour gdb meme commandes
