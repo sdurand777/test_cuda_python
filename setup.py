@@ -1,22 +1,21 @@
-
-
 from setuptools import setup
 from torch.utils.cpp_extension import BuildExtension, CUDAExtension
 
-import os
-
+import os.path as osp
+ROOT = osp.dirname(osp.abspath(__file__))
 
 setup(
-    name='cuda_add',
+    name='droid_backends',
     ext_modules=[
-        CUDAExtension('cuda_add',
+        CUDAExtension('droid_backends',
+            include_dirs=[osp.join(ROOT, 'thirdparty/eigen')],
             sources=[
-                'src/cuda_add.cpp',
-                'src/cuda_add.cu'
+                'src/droid.cpp', 
+                'src/droid_kernels.cu'
             ],
             extra_compile_args={
                 'cxx': ['-O3'],
-                'nvcc': ['-O3', '-G',
+                'nvcc': ['-O3',
                     '-gencode=arch=compute_60,code=sm_60',
                     '-gencode=arch=compute_61,code=sm_61',
                     '-gencode=arch=compute_70,code=sm_70',
@@ -30,32 +29,3 @@ setup(
 )
 
 
-
-
-# # Compilation flags for CUDA
-# cuda_flags = [
-#     '-std=c++11',
-#     '-lcudart',
-#     '-lcuda',
-#     '-lcufft',
-#     '-lcublas',
-#     '-lcurand',
-# ]
-#
-# # Path to nvcc compiler
-# nvcc_path = '/usr/local/cuda/bin/nvcc'
-#
-# ext_modules = [
-#     Pybind11Extension(
-#         'cuda_add',
-#         ['src/cuda_add.cu'],
-#         extra_compile_args={'cxx': ['-O3'], 'nvcc': cuda_flags},
-#         language='c++',
-#     ),
-# ]
-#
-# setup(
-#     name='cuda_add',
-#     ext_modules=ext_modules,
-#     cmdclass={'build_ext': build_ext},
-# )
