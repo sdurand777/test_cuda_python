@@ -20,3 +20,13 @@ info breakpoints
 exit
 
 // idem pour gdb meme commandes
+
+
+Si on print dans le cpp sa desactive les breakpoints
+Il faut mettre les options de compilations -g pour cpp et -G pour kernel dans nvcc
+Il faut mettre l'option -g dans cxx pour mettre un breakpoint dans le cpp
+
+mettre O1 au lieu de O3 pour accelerer compilation
+mettre -Xcompiler=-fopenmap dans args nvcc pour accelerer compilation
+
+probleme avec python3.10 sur nvcc 12.1 tester avec 12.5 et update driver nvidia pour avoir 12.5 ou plus

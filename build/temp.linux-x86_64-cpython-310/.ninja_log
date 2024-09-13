@@ -1,3 +1,3 @@
 # ninja log v5
-0	13433	1726135018295874718	/home/ivm/test_cuda_python/build/temp.linux-x86_64-cpython-310/src/droid.o	fd9cd688e5c124ab
-0	132893	1726135137729214729	/home/ivm/test_cuda_python/build/temp.linux-x86_64-cpython-310/src/droid_kernels.o	8b763e435c099cbf
+0	15873	1726228894858436903	/home/ivm/test_cuda_python/build/temp.linux-x86_64-cpython-310/src/droid.o	5e2b94872d83316b
+0	41838	1726228920826717922	/home/ivm/test_cuda_python/build/temp.linux-x86_64-cpython-310/src/droid_kernels.o	33703cb9822a7284
