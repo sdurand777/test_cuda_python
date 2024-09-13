@@ -30,3 +30,15 @@ mettre O1 au lieu de O3 pour accelerer compilation
 mettre -Xcompiler=-fopenmp dans args nvcc pour accelerer compilation
 
 probleme avec python3.10 sur nvcc 12.1 tester avec 12.5 et update driver nvidia pour avoir 12.5 ou plus
+
+# pour naviguer dans le kernel
+cuda thread 0,0,1
+cuda block 0,2,0
+
+# pour verifier ou on est
+p threadIdx
+p blockIdx
+
+# pour checker info mais pas clair et pas a jour
+info cuda threads
+info cuda blocks
