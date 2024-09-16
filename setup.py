@@ -14,8 +14,8 @@ setup(
                 'src/droid_kernels.cu'
             ],
             extra_compile_args={
-                'cxx': ['-O1', '-g'],
-                'nvcc': ['-O1', '-g', '-G', '-Xcompiler=-fopenmp',
+                'cxx': ['-O0', '-g'],
+                'nvcc': ['-O0', '-g', '-G', '-Xcompiler=-fopenmp',
                     '-gencode=arch=compute_86,code=sm_86',
                 ]
             }),

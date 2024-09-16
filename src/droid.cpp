@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include <ATen/ATen.h>
+#include <ATen/core/Formatting.h>
 #include <ATen/NativeFunctions.h>
 #include <ATen/Parallel.h>
 
