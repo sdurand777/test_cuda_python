@@ -64,6 +64,10 @@ torch::Tensor depth_filter_cuda(
     //printf("Tensor a");
     //print_tensor(a);
 
+    // Si vous avez besoin de transférer les tenseurs sur le CPU :
+    torch::Tensor a_cpu = a.cpu();
+    torch::Tensor b_cpu = b.cpu();
+
     // Obtenir des PackedTensorAccessor pour accéder aux données dans CUDA
     auto a_accessor = a.packed_accessor32<float,2,torch::RestrictPtrTraits>();
     auto b_accessor = b.packed_accessor32<float,2,torch::RestrictPtrTraits>();
