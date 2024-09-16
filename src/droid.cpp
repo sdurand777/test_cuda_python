@@ -16,7 +16,7 @@ torch::Tensor depth_filter(
 
 
     torch::Tensor test = torch::ones(10);
-    auto test_accessor = test.packed_accessor32<float,2,torch::RestrictPtrTraits>();
+    //auto test_accessor = test.packed_accessor32<float,2,torch::RestrictPtrTraits>();
 
     std::cout << "test : \n" << test << std::endl;
 
