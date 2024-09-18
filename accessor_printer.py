@@ -4,6 +4,8 @@ import gdb.printing
 
 import numpy as np
 
+from PIL import Image
+
 class TensorAccessorPrinter:
     """Pretty-printer for at::GenericPackedTensorAccessorBase objects."""
 
@@ -131,6 +133,12 @@ class TensorAccessorPrinter:
 
         # Afficher ou utiliser le tenseur
         print("Tensor \n", tensor)
+
+# Lire l'image depuis un fichier
+        image_path = 'image.jpeg'  # Remplacez par le chemin vers votre image
+        image = Image.open(image_path)
+        image.show()
+
 
         return "End"
 
