@@ -42,3 +42,16 @@ p blockIdx
 # pour checker info mais pas clair et pas a jour
 info cuda threads
 info cuda blocks
+
+
+# ajouter pretty-printers de gcc depuis en env conda 
+# checker printers available
+info pretty-printers
+
+# donner le chemin vers les printers
+(cuda-gdb) python 
+>import sys
+>sys.path.insert(0, '/home/ivm/test_cuda_python/gcc/libstdc++-v3/python')                          
+>from libstdcxx.v6.printers import register_libstdcxx_printers
+>register_libstdcxx_printers(gdb.current_objfile())
+>end

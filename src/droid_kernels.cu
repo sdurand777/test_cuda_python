@@ -27,6 +27,27 @@ __global__ void addition_kernel(
     }
 }
 
+__global__ void addition_kernel_d(
+    const torch::PackedTensorAccessor32<float, 3, torch::RestrictPtrTraits> a,
+    const torch::PackedTensorAccessor32<float, 3, torch::RestrictPtrTraits> b,
+    torch::PackedTensorAccessor32<float, 3, torch::RestrictPtrTraits> c)
+{
+    // Calcul de l'index global du thread en 3D (z, y, x)
+    int z = blockIdx.z * blockDim.z + threadIdx.z;
+    int y = blockIdx.y * blockDim.y + threadIdx.y;
+    int x = blockIdx.x * blockDim.x + threadIdx.x;
+
+    // Vérification pour s'assurer que le thread est dans les limites du tenseur
+    if (z < a.size(0) && y < a.size(1) && x < a.size(2)) {
+        // Addition des deux tenseurs élément par élément
+        c[z][y][x] = a[z][y][x] + b[z][y][x];
+    }
+}
+
+
+
+
+
 
 // Fonction pour imprimer un tenseur
 void print_tensor(torch::Tensor tensor) {
@@ -84,3 +105,36 @@ torch::Tensor depth_filter_cuda(
 }
 
 
+torch::Tensor depth_filter_cuda_d(
+        torch::Tensor a,
+        torch::Tensor b)
+{
+    // Vérification que les tenseurs sont sur le GPU et ont le bon type de données
+    TORCH_CHECK(a.device().is_cuda(), "Tensor a must be a CUDA tensor");
+    TORCH_CHECK(b.device().is_cuda(), "Tensor b must be a CUDA tensor");
+    TORCH_CHECK(a.scalar_type() == torch::kFloat32, "Tensor a must be of type float");
+    TORCH_CHECK(b.scalar_type() == torch::kFloat32, "Tensor b must be of type float");
+
+    // Vérification que les dimensions des tenseurs correspondent
+    TORCH_CHECK(a.sizes() == b.sizes(), "Tensors a and b must have the same shape");
+
+    // Créer un tenseur de sortie sur le GPU avec la même forme que a et b
+    auto c = torch::zeros_like(a);
+
+    // Obtenir des PackedTensorAccessor pour accéder aux données dans CUDA
+    auto a_accessor = a.packed_accessor32<float, 3, torch::RestrictPtrTraits>();
+    auto b_accessor = b.packed_accessor32<float, 3, torch::RestrictPtrTraits>();
+    auto c_accessor = c.packed_accessor32<float, 3, torch::RestrictPtrTraits>();
+
+    // Configuration des dimensions des blocs et de la grille
+    dim3 threadsPerBlock(16, 16, 1);  // Ajuster le nombre de threads par bloc
+    dim3 numBlocks(
+        (a.size(2) + threadsPerBlock.x - 1) / threadsPerBlock.x,
+        (a.size(1) + threadsPerBlock.y - 1) / threadsPerBlock.y,
+        (a.size(0) + threadsPerBlock.z - 1) / threadsPerBlock.z
+    );
+
+    // Lancement du kernel CUDA
+    addition_kernel_d<<<numBlocks, threadsPerBlock>>>(a_accessor, b_accessor, c_accessor);
+    return c;
+}
