@@ -1,0 +1,3 @@
+set breakpoint pending on
+break src/droid_kernels.cu:128
+source accessor_printer.py
