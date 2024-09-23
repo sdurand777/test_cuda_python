@@ -2,6 +2,10 @@
 import gdb
 import gdb.printing
 
+import sys
+print(sys.executable)
+print(sys.path)
+
 import numpy as np
 
 from PIL import Image
