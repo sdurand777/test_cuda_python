@@ -32,6 +32,9 @@ __global__ void addition_kernel_d(
     const torch::PackedTensorAccessor32<float, 3, torch::RestrictPtrTraits> b,
     torch::PackedTensorAccessor32<float, 3, torch::RestrictPtrTraits> c)
 {
+    auto a_accessor = a;
+    auto b_accessor = b;
+
     // Calcul de l'index global du thread en 3D (z, y, x)
     int z = blockIdx.z * blockDim.z + threadIdx.z;
     int y = blockIdx.y * blockDim.y + threadIdx.y;
