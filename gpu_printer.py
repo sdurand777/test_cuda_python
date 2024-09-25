@@ -1,37 +1,38 @@
 
-import gdb
 import gdb.printing
-
-import sys
-print(sys.executable)
-print(sys.path)
-
 import numpy as np
 
 from PIL import Image
 
 A = slice(None)
 
-class TensorAccessorPrinter:
-    """Pretty-printer for at::GenericPackedTensorAccessorBase objects."""
+class TensorPrinter:
+    """Pretty printer for CUDA Tensor-like objects."""
 
     def __init__(self, val):
         self.val = val
 
     def to_string(self, indices_spec=None):
-        # Obtenir les attributs de l'objet tensor
+
         if indices_spec is None:
-            sizes = self.val['sizes_']
-            strides = self.val['strides_']
+            # Accéder au membre __b_N2at31GenericPackedTensorAccessorBaseIfLm3ENS_17RestrictPtrTraitsEiEE
+            base = self.val['__b_N2at31GenericPackedTensorAccessorBaseIfLm3ENS_17RestrictPtrTraitsEiEE']
+            
+            # Récupération des informations de l'objet
+            data_ptr = base['data_']
+            sizes = base['sizes_']
+            strides = base['strides_']
+
+            print("data_ptr : ", data_ptr)
+            print("sizes : ", sizes)
+            print("strides : ", strides)
 
             # Extraire les dimensions du tenseur en convertissant les gdb.Value en entiers
             size_length = sizes.type.sizeof // sizes[0].type.sizeof
             sizes_list = [int(sizes[i].cast(gdb.lookup_type('int'))) for i in range(size_length)]
-            
+     
             print(f"sizes_list : {sizes_list}")
 
-            # Récupérer le pointeur de données et le convertir en adresse entière
-            data_ptr = self.val['data_']
             data_address = int(data_ptr)
             print("data_address : ", data_address)
 
@@ -41,6 +42,7 @@ class TensorAccessorPrinter:
 
             # Initialiser un tableau NumPy vide avec les bonnes dimensions
             tensor = np.zeros(sizes_list, dtype=float)
+
 
             # Configurer GDB pour afficher tous les éléments
             gdb.execute('set print elements 0', to_string=True)
@@ -72,17 +74,18 @@ class TensorAccessorPrinter:
             # Afficher ou utiliser le tenseur
             print("Tensor \n", tensor)
 
-# # Lire l'image depuis un fichier
-#             image_path = 'image.jpeg'  # Remplacez par le chemin vers votre image
-#             image = Image.open(image_path)
-#             image.show()
-
-
-            return "End"
-
+            return "Voici un Tensor Kernel"
         else:
-            sizes = self.val['sizes_']
-            strides = self.val['strides_']
+            base = self.val['__b_N2at31GenericPackedTensorAccessorBaseIfLm3ENS_17RestrictPtrTraitsEiEE']
+            
+            # Récupération des informations de l'objet
+            data_ptr = base['data_']
+            sizes = base['sizes_']
+            strides = base['strides_']
+
+            print("data_ptr : ", data_ptr)
+            print("sizes : ", sizes)
+            print("strides : ", strides)
 
             # Extraire les dimensions du tensor
             size_length = sizes.type.sizeof // sizes[0].type.sizeof
@@ -97,7 +100,6 @@ class TensorAccessorPrinter:
                 raise ValueError(f"Le nombre de dimensions spécifiées ({len(indices_spec)}) ne correspond pas à la taille du tensor ({size_length})")
 
             # Obtenir l'adresse de début des données
-            data_ptr = self.val['data_']
             data_address = int(data_ptr)
 
             # Trouver la taille de la matrice 2D résultante
@@ -157,18 +159,21 @@ class TensorAccessorPrinter:
 
             return matrix
 
+
 # Fonction pour appeler la méthode avec les indices donnés ou sans
 def print_args(tensor_name, indices_spec=None):
     obj = gdb.parse_and_eval(tensor_name)
-    printer = TensorAccessorPrinter(obj)
+    printer = TensorPrinter(obj)
     matrix = printer.to_string(indices_spec)
     print("Tensor : \n", matrix)
 
 
 def build_pretty_printer():
-    print("build pretty for accessor gpu")
-    pp = gdb.printing.RegexpCollectionPrettyPrinter("torchgpu")
-    pp.add_printer('TensorAccessorGPU', '^__b_N2at31GenericPackedTensorAccessorBase<.*>$', TensorAccessorPrinter)
+    pp = gdb.printing.RegexpCollectionPrettyPrinter("cuda_pretty_printers")
+    pp.add_printer('Tensor', '^_ZN2at27GenericPackedTensorAccessorIfLm3ENS_17RestrictPtrTraitsEiEE$', TensorPrinter)
     return pp
 
+# Enregistrer le pretty printer dans GDB
 gdb.printing.register_pretty_printer(gdb.current_objfile(), build_pretty_printer())
+
+
