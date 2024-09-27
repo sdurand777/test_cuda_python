@@ -138,6 +138,7 @@ class TensorPrinter:
 
             # Remplir la matrice 2D
             fill_matrix(offset, row_stride, col_stride)
+            print("matrix : \n", matrix)
             # Trouver les valeurs minimales et maximales de la matrice
             min_val = np.min(matrix)
             max_val = np.max(matrix)
@@ -145,12 +146,16 @@ class TensorPrinter:
             # Normaliser la matrice pour être dans la plage [0, 1]
             matrix_normalized = (matrix - min_val) / (max_val - min_val)
             
+
             # Mettre à l'échelle les valeurs à la plage [0, 255]
             matrix_scaled = matrix_normalized * 255
+            matrix_scaled = matrix_scaled.astype(np.uint8)
             # Redimensionner l'image pour qu'elle soit plus grande
+            
+            print("matrix_scaled : ", matrix_scaled)
 
             image = Image.fromarray(matrix_scaled, mode='L')  # Mode 'L' pour une image en niveaux de gris
-            scale_factor = 10
+            scale_factor = 30
             new_size = (image.width * scale_factor, image.height * scale_factor)
             image_resized = image.resize(new_size, Image.NEAREST)  # Utiliser un mode de redimensionnement approprié
 
