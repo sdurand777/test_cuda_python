@@ -49,6 +49,8 @@ info cuda blocks
 info pretty-printers
 
 # donner le chemin vers les printers
+# recuperer gcc avec git et donner le chemin vers les pretty printers en fonction dans le code ci dessous
+git clone https://gcc.gnu.org/git/gcc.git
 (cuda-gdb) python 
 >import sys
 >sys.path.insert(0, '/home/ivm/test_cuda_python/gcc/libstdc++-v3/python')                          
